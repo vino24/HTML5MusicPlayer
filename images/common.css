@@ -1,0 +1,426 @@
+@charset "utf-8";
+/* CSS Document */
+body {
+    font-family: 'simsun', Verdana, 'Lucida Grande', Arial, Helvetica, sans-serif;
+    font-size: 12px;
+
+    margin: 0;
+
+    background-color: #000;
+    background-image: url(bg0.jpg);
+    background-size: 100% auto;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.cover_bg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    height: 300px;
+    margin-top: -155px;
+    margin-left: -155px;
+    border-radius: 50%;
+    background: url(coverbg.png) no-repeat;
+    overflow: hidden;
+}
+.rotate {
+    animation-name: rotate;
+    animation-duration: 60s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.songintro {
+    line-height: 20px;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    overflow: hidden;
+    width: 300px;
+    height: 20px;
+    margin-top: 155px;
+    margin-left: -150px;
+
+    text-align: center;
+
+    color: #fff;
+}
+
+.cover_pic {
+    width: 300px;
+    height: 300px;
+    background: none;
+    background-size: cover;
+}
+
+.homebtn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+
+    width: 30px;
+    height: 30px;
+
+    background: url(list.png) no-repeat;
+    background-size: 30px 30px;
+}
+
+.volbtn {
+    position: absolute;
+    top: 18px;
+    right: 70px;
+
+    width: 30px;
+    height: 30px;
+
+    background: url(vol.png) no-repeat no-repeat 0 9999px;
+    background-position: -2px -248px;
+}
+
+.vol {
+/ / visibility : hidden;
+    position: absolute;
+    right: 70px;
+    top: -110px;
+    width: 30px;
+    height: 110px;
+    background: #333333;
+    display: none;
+}
+
+.volbg {
+    position: absolute;
+    top: 15px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 10px;
+    height: 80px;
+    border-radius: 10px;
+    background-color: red;
+    overflow: hidden;
+}
+#voltime {
+    background-color:black;
+}
+.playbg {
+    float: right;
+    margin-top: -22px;
+    width: 400px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 150%;
+}
+
+.progdiv {
+    width: 400px;
+    height: 9px;
+    margin-top: -25px;
+    margin-left: 300px;
+    border-radius: 10px;
+    background-color: #000;
+}
+
+.pgbg {
+    position: relative;
+    height: 10px;
+}
+
+.pgbuf,
+.pgtime {
+    position: absolute;
+    top: 0;
+    width: 0;
+    height: 10px;
+
+    border-radius: 10px;
+    background-color: #7D0606;
+}
+
+.pgtime {
+    background-color: #fff;
+}
+
+.btnsbar {
+    width: 100%;
+    height: 40px;
+    position: fixed;
+    bottom: 0;
+    margin: 0 auto;
+    padding: 10px 0;
+    background: #333;
+    opacity: 0.7;
+}
+
+.playbtns {
+    width: 200px;
+    padding-left: 100px;
+    padding-right: 60px;
+}
+
+.playbtns a {
+    display: inline-block;
+}
+
+.prevbtn,
+.nextbtn {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 4px;
+
+    background: url(prevbtn.png);
+    background-size: 32px 32px;
+}
+
+.playbtn {
+    width: 40px;
+    height: 40px;
+    margin: 0 17px;
+
+    background: url(playbtn.png);
+    background-size: 40px 40px;
+}
+
+.pausebtn {
+    background: url(pausebtn.png);
+    background-size: 40px 40px;
+}
+
+.nextbtn {
+    background: url(nextbtn.png);
+    background-size: 32px 32px;
+}
+
+header {
+    line-height: 30px;
+
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 30px;
+    padding: 5px 0;
+
+    text-align: center;
+
+    background: url(hdbg.png) repeat-x;
+}
+
+header span {
+    font-size: 150%;
+
+    color: #fff;
+}
+
+.fmlist,
+.fmlista {
+    float: left;
+
+    width: 30px;
+    height: 30px;
+
+    background: url(listbtnb.png);
+    background-size: 30px 30px;
+}
+
+.fmlista {
+    float: right;
+}
+
+.list_style {
+    font-size: 140%;
+    line-height: 30px;
+
+    float: left;
+
+    width: 100px;
+    height: 30px;
+    margin: 0 auto;
+
+    text-decoration: none;
+    border: 1px solid white;
+    border-radius: 4px;
+    color: #f48a01;
+}
+
+.no_select {
+    position: absolute;
+    right: 100px;
+    display: inline-block;
+    width: 200px;
+    border-radius: 10px;
+    color: #fff;
+}
+
+.fmlistbox {
+    position: absolute;
+    z-index: 500;
+    top: 0;
+    left: -1000px;
+
+    overflow: hidden;
+
+    width: 100%;
+    height: 100%;
+
+    background: url('bg.png') repeat;
+}
+
+.fmlistdiv {
+    min-height: 500px;
+}
+
+.fmlistdiv dl {
+    padding: 5px;
+    border: 1px solid transparent;
+    border-radius: 15%;
+    border-bottom: 1px solid #252525;
+}
+
+.fmlistdiv dt {
+    float: left;
+
+    margin-right: 10px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.fmlistdiv a {
+    display: flex;
+    align-items: baseline;
+    height: 50px;
+    font-size: 150%;
+    text-decoration: none;
+    color: #fff;
+}
+
+.fmlistdiv dd {
+    float: left;
+    display: table-cell;
+    vertical-align: middle;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin: auto 20px;
+}
+
+.fmlistdiv .songinfo {
+    overflow: hidden;
+    padding: 10px 0;
+}
+
+
+
+.fmlistdiv span {
+    color: #ccc;
+}
+
+.fmlistdiv p {
+    line-height: 40px;
+
+    color: #fff;
+}
+
+.fmlistdiv dd:nth-of-type(2) {
+    padding: 0 0;
+}
+
+.s_page {
+    width: 100%;
+    height: 30px;
+    padding-top: 10px;
+}
+
+.s_page_div {
+    line-height: 30px;
+
+    overflow: hidden;
+
+    width: 300px;
+    height: 30px;
+    margin: 0 auto;
+    padding-left: 20px;
+}
+
+.s_page a {
+    float: left;
+
+    margin-right: 15px;
+
+    cursor: pointer;
+    height: 30px;
+    text-indent: -9999px;
+}
+
+.first_pg {
+    width: 63px;
+
+    background: url(pg1.png) no-repeat;
+    background-size: 65px 30px;
+}
+
+.end_pg {
+    width: 63px;
+
+    background: url(pg4.png) no-repeat;
+    background-size: 65px 30px;
+}
+
+.prev_pg {
+    width: 30px;
+
+    background: url(pg2.png) no-repeat;
+    background-size: 30px;
+}
+
+.next_pg {
+    width: 30px;
+
+    background: url(pg3.png) no-repeat;
+    background-size: 30px;
+}
+
+.num_pg {
+    float: left;
+
+    margin-right: 15px;
+
+    color: #fff;
+}
+
+@media (max-width: 1100px) {
+    .playbg {
+        display: none;
+    }
+}
+@media (max-width: 800px) {
+    .volbtn {
+        display: none;
+    }
+    .homebtn {
+        display: none;
+    }
+}
+@media (max-width: 700px) {
+    .progdiv {
+        width: 200px;
+    }
+}
+@media (max-width: 500px) {
+    .progdiv {
+        display: none;
+    }
+}
