@@ -11,9 +11,9 @@ var Player = function () {
 
         obj = $(id)[0];
         var $obj = $(obj);
-
+        obj.volume = Number(localStorage['vol']) || .5;
         $obj.bind('loadeddata', updateTimer);
-
+        $obj.bind('loadeddata',updateVol);
         $obj.bind('progress', function () {
             console.log(obj.readyState);
             //  @todo 网络流畅状态下Chrome/Firefox readystate只有0/4两个，IE无效
@@ -54,7 +54,8 @@ var Player = function () {
             var length = volbg.getBoundingClientRect().bottom - e.clientY;
             var percent = (volbg.offsetHeight - length) / volbg.offsetHeight;
             obj.volume = 1 - percent;
-            $('#voltime').css('height', (percent * 100) + "%");
+            localStorage['vol'] = obj.volume;
+            updateVol();
         });
     };
 
@@ -145,6 +146,11 @@ var Player = function () {
         //  $('#timeremain').text('-' + min + ':' + sec);
         var percent = parseInt(ct * 100 / mt);
         $('#pgtime').css('width', percent + '%');
+    };
+
+    //  更新音量条
+    var updateVol= function () {
+        $('#voltime').css('height',(1-obj.volume)*100+"%");
     };
 };
 

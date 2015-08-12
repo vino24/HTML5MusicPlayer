@@ -37,7 +37,7 @@
     <a href="javascript:void(0)" id="fmlist" class="homebtn"></a>
     <div class="vol">
         <div class="volbg" id="volbg">
-            <div id="voltime" class="voltime" style="height: 50%;"></div>
+            <div id="voltime" class="voltime"></div>
         </div>
     </div>
 </div>
@@ -154,7 +154,7 @@
                     $("#songtitle").html(json.songtitle);
                     $("#author").html(json.auther);
                     $("#songintro").html(json.songintro);
-                    $("#cover_pic").css({'background-image': 'url(' + json.cover + ')','background-size':'cover'});
+                    $("#cover_pic").css({'background-image': 'url(' + json.cover + ')','background-size':'300px 300px'});
 
                     //替换歌曲
                     document.getElementById("song_player").src = json.url;
