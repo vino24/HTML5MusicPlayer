@@ -20,15 +20,14 @@ CD复古风音乐播放器 在线演示地址：http://backgroudmusic.sinaapp.co
 
 1. 判定媒体内容加载情况时在IE下无效，导致缓存进度在IE无法显示;不同浏览器、网络状况下仍旧会出现不可预见问题。
 
- * 错误信息：
+   * 错误信息：`Failed to execute 'end' on 'TimeRanges': The index provided (0) is greater than or equal to the maximum bound (0)`
  
-`Failed to execute 'end' on 'TimeRanges': The index provided (0) is greater than or equal to the maximum bound (0)`
- 
- * 处理：
+   * 处理：
  
  开始时把更新缓存进度的函数绑定到progress事件，希望借助progress的不断触发来实现缓存条更新，结果会显示如上错误。
  
  于是把`obj.buffered.end(0)`打印了一些，发现并不是会一直报错，当音乐播放一段时间后可以输出结果。
+
  
 2. 暂停时无法保持动画当前位置，尝试animation-play-state：pause 暂停动画，但元素样式还是也会回到原始状态。
 
