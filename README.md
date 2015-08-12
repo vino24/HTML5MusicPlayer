@@ -26,10 +26,27 @@ CD复古风音乐播放器 在线演示地址：http://backgroudmusic.sinaapp.co
  
  开始时把更新缓存进度的函数绑定到progress事件，希望借助progress的不断触发来实现缓存条更新，结果会显示如上错误。
  
- 于是把`obj.buffered.end(0)`打印了一些，发现并不是会一直报错，当音乐播放一段时间后可以输出结果。
+ 于是把`obj.buffered.end(0)`打印了一下，发现并不是会一直报错，当音乐播放一段时间后可以输出结果。感觉问题出在了事件触发的时间上。在一开始触发progress时，此时还没有进行缓冲，`buffer.end(0)`是无法获取的，所有才会出现如上错误。
+ 
+ 在audio所有事件中，除了progress就只有timeupdate是会不停触发的，但timeupdate是与currentTime相关的，更适合用于播放条的更新而不是缓冲条;还有一种办法就是利用setInterval不停地调用缓冲更新函数，但这样就跟audio的事件没有任何关联了...
+
+  之所以出问题是因为在前期触发progress时没有缓冲，那么可以在调用更新缓冲函数前加一个判断，让它只有在可以获取`buffered.end(0)`时才调用。
+  
+  audio的readyState属性指定的是当前已经加载的媒体内容，可以通过它的值来进行判断，在readyState值为0或1时，是没有加载媒体内容的，所以要在其后才可以调用更新缓存函数。在调用更新缓冲函数前加一个if判断来判断下readyState就可以了。
+  
+  ```
+              if (obj.readyState !== 0 && obj.readyState !== 1) {
+                onSoundBuffering();
+            }
+  ```
+  
+  这样便不会报错了，但是在Chrome下还是有一些奇怪的现象，打印readyState会发现有些时候莫名出现一连串0，明明已经开始播放了，readyState一直是0是什么鬼？
+ 
 
  
 2. 暂停时无法保持动画当前位置，尝试animation-play-state：pause 暂停动画，但元素样式还是也会回到原始状态。
+
+3. 页面布局方面比较仓促，由于核心是在js上，所有布局方面没有考虑太多，只是用来一些简单的media query，还有待完善。
 
 ### 一些收获（所有结论皆是在网络状态良好（20M宽带）下得出）：
 1. 关于readyState：
