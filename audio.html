@@ -15,7 +15,7 @@
     <div class="cover_pic" id="cover_pic">
     </div>
 </div>
-<div class="songintro" id="songintro"></div>
+<div class="lrc" id="lrc"></div>
 <audio id="song_player" src="" preload="auto" autoplay="true"></audio>
 <div class="btnsbar">
     <div class="playbtns">
@@ -35,6 +35,7 @@
     </div>
     <a href="javascript:void(0)" id="fmvol" class="volbtn"></a>
     <a href="javascript:void(0)" id="fmlist" class="homebtn"></a>
+
     <div class="vol">
         <div class="volbg" id="volbg">
             <div id="voltime" class="voltime"></div>
@@ -52,9 +53,9 @@
             <a href="javascript:void(0)">
                 <dt><img src="images/cover.jpg" width="50px"></dt>
                 <div class="songinfo">
-                <dd>和你在一起</dd>
-                <dd>李志</dd>
-                <dd><span>微信公号:每天一首背景音乐</span></dd>
+                    <dd>和你在一起</dd>
+                    <dd>李志</dd>
+                    <dd><span>微信公号:每天一首背景音乐</span></dd>
                 </div>
             </a>
         </dl>
@@ -141,6 +142,28 @@
         var query = query.substr(1);
         return query;
     }
+
+    //  解析歌词
+    function format_lrc(lrc) {
+        var format_lrc = [];
+        lrc = lrc.split(" ");
+        for (var row = 0; row < lrc.length; row++) {
+            var piece = lrc[row].split("]");
+            var text = piece[1];
+            var time = piece[0].substr(1).split(":");
+            var second = Math.floor(Number(time[0] * 60) + Number(time[1]));
+            format_lrc[second] = text;
+        }
+        return format_lrc;
+    }
+
+
+    // 更新歌词显示
+    function display_lrc(lrc) {
+        var audio = document.getElementById("song_player");
+        var ct = Math.floor(audio.currentTime);
+        $("#lrc").html(lrc[ct]);
+    }
     //获取歌曲详细
     function get_song(song_id, open_id) {
         $.ajax({
@@ -152,9 +175,16 @@
                 if (json.error == 0) {
                     //替换歌曲信息
                     $("#songtitle").html(json.songtitle);
-                    $("#author").html(json.auther);
-                    $("#songintro").html(json.songintro);
-                    $("#cover_pic").css({'background-image': 'url(' + json.cover + ')','background-size':'300px 300px'});
+                    $("#author").html(json.author);
+                    $("#cover_pic").css({
+                        'background-image': 'url(' + json.cover + ')',
+                        'background-size': '300px 300px'
+                    });
+
+                    var lyric = format_lrc(json.lrc);
+                    setInterval(function () {
+                        display_lrc(lyric);
+                    }, 1000);
 
                     //替换歌曲
                     document.getElementById("song_player").src = json.url;
