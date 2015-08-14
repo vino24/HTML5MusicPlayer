@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>每天一首背景音乐</title>
+    <title>Music Player</title>
     <link rel="stylesheet" href="images/common.css">
     <script src="images/jquery-2.0.0.min.js"></script>
     <script src="images/move.min.js"></script>
@@ -30,7 +30,7 @@
         </div>
     </div>
     <div class="playbg">
-        <span class="songtitle" id="songtitle">李志</span>
+        <span class="songtitle" id="songtitle">结婚</span>
         <span class="author" id="author">李志</span>
     </div>
     <a href="javascript:void(0)" id="fmvol" class="volbtn"></a>
@@ -182,6 +182,8 @@
                     });
 
                     var lyric = format_lrc(json.lrc);
+
+                    //  应用闭包以获取lyric的值
                     setInterval(function () {
                         display_lrc(lyric);
                     }, 1000);
