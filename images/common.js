@@ -13,9 +13,10 @@ var Player = function () {
         var $obj = $(obj);
         obj.volume = Number(localStorage['vol']) || .5;
         $obj.bind('loadeddata', updateTimer);
-        $obj.bind('loadeddata',updateVol);
+        $obj.bind('loadeddata', updateVol);
+
         $obj.bind('progress', function () {
-            console.log(obj.readyState);
+            //  console.log(obj.readyState);
             //  @todo 网络流畅状态下Chrome/Firefox readystate只有0/4两个，IE无效
             //  通过readystate判定媒体内容加载情况，保证在可读取buffer信息时才调用onSoundBuffering
             if (obj.readyState !== 0 && obj.readyState !== 1) {
@@ -100,11 +101,13 @@ var Player = function () {
 
     var audioSeek = function (e) {
         if (obj.paused || obj.ended) {
-            this.play();
+            that.play();
             enhanceAudioSeek(e);
+            updateLrc();
         }
         else {
             enhanceAudioSeek(e);
+            updateLrc();
         }
     };
     //    跳转函数
@@ -120,7 +123,7 @@ var Player = function () {
     //  更新缓存条
     var onSoundBuffering = function () {
         var mt = parseInt(obj.duration);
-        console.log(obj.buffered.end(0));
+        // console.log(obj.buffered.end(0));
         var bt = obj.buffered.end(0);
         //  计算当前缓存内容百分百
         var percent_loaded = Math.floor(bt / mt * 100);
@@ -129,6 +132,10 @@ var Player = function () {
 
     //  自动播放下一首
     var onSoundComplete = function () {
+
+        //  结束上一首的歌词显示
+        clearInterval(lrc_interval);
+
         if (next_id == 0) {
             get_song(-1, open_id);
         }
@@ -142,15 +149,21 @@ var Player = function () {
     var updateTimer = function () {
         mt = parseInt(obj.duration);
         var ct = parseInt(obj.currentTime);
-        //  timeConvent((mt - ct));
-        //  $('#timeremain').text('-' + min + ':' + sec);
         var percent = parseInt(ct * 100 / mt);
         $('#pgtime').css('width', percent + '%');
     };
+    //  更新歌词(防止进度跳转后歌词还卡在跳转前位置)
+    var updateLrc = function () {
+        var ct = Math.floor(obj.currentTime);
 
+        while (lyric[ct] == undefined) {
+            ct--;
+        }
+        $("#lrc").html(lyric[ct]);
+    };
     //  更新音量条
-    var updateVol= function () {
-        $('#voltime').css('height',(1-obj.volume)*100+"%");
+    var updateVol = function () {
+        $('#voltime').css('height', (1 - obj.volume) * 100 + "%");
     };
 };
 
@@ -163,22 +176,4 @@ function initsite() {
     dheight = $('body').height();
     $('#fmlistbox').css('left', 0 - dwidth);//-dwidth
 };
-
-/*
- //  时间格式化
- function timeConvent(ts) {
- ts = Math.round(ts * 100) / 100;
- var mm = checkTime(parseInt(ts / 60));
- var ss = checkTime(parseInt(ts % 60));
- return mm + ":" + ss;
- }
-
- //  时间美化
- function checkTime(i) {
- if (i < 10) {
- i = "0" + i;
- }
- return i;
- }
- */
 

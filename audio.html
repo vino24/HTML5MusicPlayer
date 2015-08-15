@@ -73,9 +73,10 @@
 
 <script>
     //新建一个播放器类，页面宽度高度；
-    var player = new Player(), dwidth, dheight;
+    var player = new Player(), dwidth, dheight, lrc_interval;
     //定义前后歌曲ID，当前歌曲ID，微信用户ID
     var next_id = 0, prev_id = 0, current_id = 0, open_id = "";
+    var audio = document.getElementById("song_player");
     $(function () {
         //初始化页面
         initsite();
@@ -144,9 +145,9 @@
     }
 
     //  解析歌词
-    function format_lrc(lrc) {
+    function format_lrc(json) {
         var format_lrc = [];
-        lrc = lrc.split(" ");
+        var lrc = json.lrc.split(" ");
         for (var row = 0; row < lrc.length; row++) {
             var piece = lrc[row].split("]");
             var text = piece[1];
@@ -154,14 +155,17 @@
             var second = Math.floor(Number(time[0] * 60) + Number(time[1]));
             format_lrc[second] = text;
         }
+        //  防止歌词卡在上一首最后一句
+        if (!format_lrc[0]) {
+            format_lrc[0] = json.songtitle + "-" + json.author;
+        }
         return format_lrc;
     }
 
 
     // 更新歌词显示
     function display_lrc(lrc) {
-        var audio = document.getElementById("song_player");
-        var ct = Math.floor(audio.currentTime);
+         ct = Math.floor(audio.currentTime);
         $("#lrc").html(lrc[ct]);
     }
     //获取歌曲详细
@@ -181,15 +185,15 @@
                         'background-size': '300px 300px'
                     });
 
-                    var lyric = format_lrc(json.lrc);
+                    lyric = format_lrc(json);
 
-                    //  应用闭包以获取lyric的值
-                    setInterval(function () {
+                    lrc_interval = setInterval(function () {    //  应用闭包以获取lyric的值
                         display_lrc(lyric);
                     }, 1000);
 
                     //替换歌曲
-                    document.getElementById("song_player").src = json.url;
+                    audio.src = json.url;
+
                     //歌曲ID赋值
                     next_id = json.next_id;
                     prev_id = json.prev_id;
@@ -248,6 +252,8 @@
             alert("亲，没有上一首歌曲了！");
             return false;
         }
+        //  结束上一首的歌词显示
+        clearInterval(lrc_interval);
         //播放
         get_song(prev_id, open_id);
     }
@@ -255,6 +261,8 @@
     function next_song() {
         //判断下一首歌曲ID是否为0，为0表示已经到末尾，跳转到第一首
         if (next_id == 0) {
+            //  结束上一首的歌词显示
+            clearInterval(lrc_interval);
             get_song(-1, open_id);
             return false;
         }
