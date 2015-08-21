@@ -3,19 +3,21 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>Music Player</title>
+    <title>爱民谣 - 唯音乐与爱不可辜负</title>
     <link rel="stylesheet" href="images/common.css">
     <script src="images/jquery-2.0.0.min.js"></script>
     <script src="images/move.min.js"></script>
     <script src="images/common.js"></script>
 </head>
-
 <body>
-<div class="cover_bg">
-    <div class="cover_pic" id="cover_pic">
+<div class="player">
+    <div class="cover_bg">
+        <div class="outer"></div>
+        <div class="cover_pic" id="cover_pic">
+        </div>
     </div>
+    <div class="lrc" id="lrc"></div>
 </div>
-<div class="lrc" id="lrc"></div>
 <audio id="song_player" src="" preload="auto" autoplay="true"></audio>
 <div class="btnsbar">
     <div class="playbtns">
@@ -34,6 +36,7 @@
         <span class="author" id="author">李志</span>
     </div>
     <a href="javascript:void(0)" id="fmvol" class="volbtn"></a>
+    <a href="javascript:void(0)" id="heart" class="heartbtn"></a>
     <a href="javascript:void(0)" id="fmlist" class="homebtn"></a>
 
     <div class="vol">
@@ -91,7 +94,7 @@
             return false;
         });
         //绑定点击喜欢事件
-        $('#heartbtn').click(function () {
+        $('#heart').click(function () {
             like();
             return false;
         });
@@ -139,7 +142,7 @@
     //获取url传递的参数   
     function parseQuery(query) {
         var Params = "0&&";
-        if (!query) return Params; // return empty object
+        if (!query) return Params;
         var query = query.substr(1);
         return query;
     }
@@ -165,7 +168,7 @@
 
     // 更新歌词显示
     function display_lrc(lrc) {
-         ct = Math.floor(audio.currentTime);
+        ct = Math.floor(audio.currentTime);
         $("#lrc").html(lrc[ct]);
     }
     //获取歌曲详细
@@ -200,10 +203,10 @@
                     current_id = json.current_id;
                     //判断是否喜欢歌曲
                     if (json.like_song > 0) {
-                        $("#heartbtn").addClass("heartselect");
+                        $("#heart").addClass("heart_selected");
                     }
                     else {
-                        $("#heartbtn").removeClass("heartselect");
+                        $("#heart").removeClass("heartselected");
                     }
                 }
                 else {
@@ -232,10 +235,10 @@
                 if (json.error == 0) {
                     //根据返回参数切换样式
                     if (json.like_flag == 1) {
-                        $("#heartbtn").addClass("heartselect");
+                        $("#heart").addClass("heartselected");
                     }
                     else {
-                        $("#heartbtn").removeClass("heartselect");
+                        $("#heart").removeClass("heartselected");
                     }
                 }
                 else {
