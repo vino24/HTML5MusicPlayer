@@ -282,19 +282,24 @@ header span {
     color: #fff;
 }
 
-.fmlist,
-.fmlista {
-    float: left;
 
+.fmlista {
+    float: right;
     width: 30px;
     height: 30px;
 
     background: url(listbtnb.png);
     background-size: 30px 30px;
 }
-
-.fmlista {
+.search {
     float: right;
+    height: 26px;
+    padding-left: 30px;
+    margin-right: 100px;
+    border-radius: 20px;
+}
+input:focus {
+    outline-width:0px;
 }
 
 .list_style {
@@ -305,22 +310,15 @@ header span {
 
     width: 100px;
     height: 30px;
-    margin: 0 auto;
+    margin-right: 10px;
 
     text-decoration: none;
-    border: 1px solid white;
+    border: 1px solid gray;
     border-radius: 4px;
     color: #f48a01;
 }
 
-.no_select {
-    position: absolute;
-    right: 100px;
-    display: inline-block;
-    width: 200px;
-    border-radius: 10px;
-    color: #fff;
-}
+
 
 .fmlistbox {
     position: absolute;

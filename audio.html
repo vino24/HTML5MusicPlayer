@@ -48,8 +48,10 @@
 <div id="fmlistbox" class="fmlistbox">
     <header>
         <a href="javascript:void(0)" id="all_list" class="list_style">全部歌曲</a>
-        <input type="search" id="like_list" class="list_style no_select" placeholder="  搜索"/>
+        <a href="javascript:void(0)" id="like_list" class="list_style no_select">我喜欢的</a>
         <a href="javascript:void(0)" id="fmlista" class="fmlista"></a>
+        <input type="search" id="search" class="search no_select" placeholder="请输入歌名"/>
+
     </header>
     <div id="fmlistdiv" class="fmlistdiv">
         <dl>
@@ -58,7 +60,7 @@
                 <div class="songinfo">
                     <dd>和你在一起</dd>
                     <dd>李志</dd>
-                    <dd><span>微信公号:每天一首背景音乐</span></dd>
+                    <dd><span>爱情不过是生活的屁</span></dd>
                 </div>
             </a>
         </dl>
@@ -111,6 +113,7 @@
         //显示全部歌曲列表
         $('#all_list').click(function () {
             $("#all_list").removeClass("no_select");
+            $("#search").addClass("no_select");
             $("#like_list").addClass("no_select");
             get_list(1, 0);
             return false;
@@ -118,10 +121,31 @@
         //显示喜欢歌曲列表
         $('#like_list').click(function () {
             $("#all_list").addClass("no_select");
+            $("#search").addClass("no_select");
             $("#like_list").removeClass("no_select");
             get_list(1, 1);
             return false;
         });
+        //  显示搜索结果
+        var search_text = document.getElementById("search");
+        if (search_text.addEventListener)
+            search_text.addEventListener("input", function () {
+                $("#all_list").addClass("no_select");
+                $("#like_list").addClass("no_select");
+                $("#search").removeClass("no_select");
+                var keyword = search_text.value;
+                console.log(keyword);
+                get_list(1, 2, keyword);
+            }, false);
+
+        else search_text.attachEvent("oninpt", function () {
+            $("#all_list").addClass("no_select");
+            $("#like_list").addClass("no_select");
+            $("#search").removeClass("no_select");
+            var keyword = search_text.value;
+            get_list(1, 2, keyword);
+        });
+
         //播放器绑定音乐组件
         player.init('#song_player');
         //获取url传递的值
@@ -274,50 +298,86 @@
     }
 
     //获取歌曲列表,page:页码,like_flag:喜欢列表标识    
-    function get_list(page, like_flag) {
+    function get_list(page, like_flag, keyword) {
         var list_type = "list";
-
-        if (like_flag == 1) {
-            list_type = "like_list";
-        }
-
-        $.ajax({
-            url: "http://backgroudmusic.sinaapp.com/wxgetmusic.php?t=jsonp&do=" + list_type + "&open_id=" + open_id + "&page=" + page,
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            timeout: 3000,
-            success: function (json) {
-                if (json.error == 0) {
-                    var list_html = "";
-                    var j = 0;
-                    $.each(json.music_list, function (i, v) {
+        if (like_flag == 2) {
+            list_type = "search_list";
+            $.ajax({
+                url: "http://backgroudmusic.sinaapp.com/wxgetmusic.php?t=jsonp&do=" + list_type + "&keyword=" + keyword,
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                timeout: 3000,
+                success: function (json) {
+                    console.log(json);
+                    if (json.error == 0) {
+                        var list_html = "";
                         list_html += '<dl>';
-                        list_html += '<a href="javascript:void(0)" onclick="get_song_from_list(' + v.mid + ')">';
-                        list_html += '<dt><img src="' + v.cover + '" width=50></dt>';
-                        list_html += '<dd><h3>' + v.title + '</h3></dd>';
-                        list_html += '<dd>' + v.singer + '</dd>';
-                        list_html += '<dd><span>' + v.intro + '</span></dd>';
+                        if(json.type=="0"){
+                            list_html += '<a href="javascript:void(0)" onclick="get_song_from_list(' + json.music_url + ')">';
+                            list_html += '<dt><img src="' + json.music_cover + '" width=50></dt>';
+                            list_html += '<dd><h3>' + json.music_name + '</h3></dd>';
+                            list_html += '<dd>' + json.music_singer + '</dd>';
+                            list_html += '<dd>' + json.music_intro + '</dd>';
+                        } else {
+                            list_html += '<a href="'+json.singer_url+'">';
+                            list_html += '<dt><img src="' + json.singer_cover + '" width=50 height=50></dt>';
+                            list_html += '<dd><h3>' + json.singer_name + '</h3></dd>';
+                        }
                         list_html += '</a>';
                         list_html += '</dl>';
-                    });
-                    $("#fmlistdiv").html(list_html);
-                    var page_html = "";
-                    if (json.page != 1) {
-                        page_html += '<a href="javascript:void(0)" class="first_pg" onclick="get_list(1,' + like_flag + ');">首页</a>';
-                        page_html += '<a href="javascript:void(0)" class="prev_pg" onclick="get_list(' + json.music_prev + ',' + like_flag + ');">上一页</a>';
+
+                        $("#fmlistdiv").html(list_html);
+
                     }
-                    page_html += '<span class="num_pg">' + json.page + '/' + json.real_page + '</span>';
-                    if (json.page != json.real_page) {
-                        page_html += '<a href="javascript:void(0)" class="next_pg" onclick="get_list(' + json.music_next + ',' + like_flag + ');">下一页</a>';
-                        page_html += '<a href="javascript:void(0)" class="end_pg" onclick="get_list(' + json.real_page + ',' + like_flag + ');">尾页</a>';
+                    else {
+                        $("#fmlistdiv").html("<p>" + json.errmsg + "</p>");
                     }
-                    $("#s_page_div").html(page_html);
                 }
-                else {
-                    $("#fmlistdiv").html("<p>" + json.errmsg + "</p>");
-                }
+            });
+
+        } else {
+            if (like_flag == 1) {
+                list_type = "like_list";
             }
-        });
+
+            $.ajax({
+                url: "http://backgroudmusic.sinaapp.com/wxgetmusic.php?t=jsonp&do=" + list_type + "&open_id=" + open_id + "&page=" + page,
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                timeout: 3000,
+                success: function (json) {
+                    if (json.error == 0) {
+                        var list_html = "";
+                        var j = 0;
+                        $.each(json.music_list, function (i, v) {
+                            list_html += '<dl>';
+                            list_html += '<a href="javascript:void(0)" onclick="get_song_from_list(' + v.mid + ')">';
+                            list_html += '<dt><img src="' + v.cover + '" width=50></dt>';
+                            list_html += '<dd><h3>' + v.title + '</h3></dd>';
+                            list_html += '<dd>' + v.singer + '</dd>';
+                            list_html += '<dd><span>' + v.intro + '</span></dd>';
+                            list_html += '</a>';
+                            list_html += '</dl>';
+                        });
+                        $("#fmlistdiv").html(list_html);
+                        var page_html = "";
+                        if (json.page != 1) {
+                            page_html += '<a href="javascript:void(0)" class="first_pg" onclick="get_list(1,' + like_flag + ');">First</a>';
+                            page_html += '<a href="javascript:void(0)" class="prev_pg" onclick="get_list(' + json.music_prev + ',' + like_flag + ');">Pre</a>';
+                        }
+                        page_html += '<span class="num_pg">' + json.page + '/' + json.real_page + '</span>';
+                        if (json.page != json.real_page) {
+                            page_html += '<a href="javascript:void(0)" class="next_pg" onclick="get_list(' + json.music_next + ',' + like_flag + ');">Next</a>';
+                            page_html += '<a href="javascript:void(0)" class="end_pg" onclick="get_list(' + json.real_page + ',' + like_flag + ');">Last</a>';
+                        }
+                        $("#s_page_div").html(page_html);
+                    }
+                    else {
+                        $("#fmlistdiv").html("<p>" + json.errmsg + "</p>");
+                    }
+                }
+            });
+        }
         return true;
 
     }
