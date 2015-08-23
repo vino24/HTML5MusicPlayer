@@ -133,17 +133,16 @@
                 $("#all_list").addClass("no_select");
                 $("#like_list").addClass("no_select");
                 $("#search").removeClass("no_select");
-                var keyword = search_text.value;
-                console.log(keyword);
-                get_list(1, 2, keyword);
+
+                get_list(1, 0, search_text.value.replace(/\s/g, ""));    //  去除空白字符,而且神奇的解决input事件实时更新问题
             }, false);
 
         else search_text.attachEvent("oninpt", function () {
             $("#all_list").addClass("no_select");
             $("#like_list").addClass("no_select");
             $("#search").removeClass("no_select");
-            var keyword = search_text.value;
-            get_list(1, 2, keyword);
+
+            get_list(1, 0, search_text.value.replace(/\s/g, ""));        //  去除空白字符
         });
 
         //播放器绑定音乐组件
@@ -288,19 +287,20 @@
     function next_song() {
         //判断下一首歌曲ID是否为0，为0表示已经到末尾，跳转到第一首
         if (next_id == 0) {
-            //  结束上一首的歌词显示
-            clearInterval(lrc_interval);
+
             get_song(-1, open_id);
             return false;
         }
+        //  结束上一首的歌词显示
+        clearInterval(lrc_interval);
         //播放
         get_song(next_id, open_id);
     }
 
-    //获取歌曲列表,page:页码,like_flag:喜欢列表标识    
+    //获取歌曲列表,page:页码
     function get_list(page, like_flag, keyword) {
         var list_type = "list";
-        if (like_flag == 2) {
+        if (keyword) {
             list_type = "search_list";
             $.ajax({
                 url: "http://backgroudmusic.sinaapp.com/wxgetmusic.php?t=jsonp&do=" + list_type + "&keyword=" + keyword,
@@ -308,18 +308,17 @@
                 jsonp: 'callback',
                 timeout: 3000,
                 success: function (json) {
-                    console.log(json);
                     if (json.error == 0) {
                         var list_html = "";
                         list_html += '<dl>';
-                        if(json.type=="0"){
+                        if (json.type == "0") {
                             list_html += '<a href="javascript:void(0)" onclick="get_song_from_list(' + json.music_url + ')">';
                             list_html += '<dt><img src="' + json.music_cover + '" width=50></dt>';
                             list_html += '<dd><h3>' + json.music_name + '</h3></dd>';
                             list_html += '<dd>' + json.music_singer + '</dd>';
                             list_html += '<dd>' + json.music_intro + '</dd>';
                         } else {
-                            list_html += '<a href="'+json.singer_url+'">';
+                            list_html += '<a href="' + json.singer_url + '">';
                             list_html += '<dt><img src="' + json.singer_cover + '" width=50 height=50></dt>';
                             list_html += '<dd><h3>' + json.singer_name + '</h3></dd>';
                         }

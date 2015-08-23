@@ -174,6 +174,6 @@ function audioPlaying() {
 function initsite() {
     dwidth = $('body').width();
     dheight = $('body').height();
-    $('#fmlistbox').css('left', 0 - dwidth);//-dwidth
+    $('#fmlistbox').css('left', 0 - dwidth);
 };
 
