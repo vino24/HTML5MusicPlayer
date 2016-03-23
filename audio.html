@@ -4,10 +4,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>爱民谣 - 唯音乐与爱不可辜负</title>
-    <link rel="stylesheet" href="images/common.css">
-    <script src="images/jquery-2.0.0.min.js"></script>
-    <script src="images/move.min.js"></script>
-    <script src="images/common.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="common/jquery-2.0.0.min.js"></script>
+    <script src="common/move.min.js"></script>
+    <script src="js/main.js"></script>
 </head>
 <body>
 <div class="player">
@@ -166,19 +166,17 @@
     function parseQuery(query) {
         var Params = "0&&";
         if (!query) return Params;
-        var query = query.substr(1);
-        return query;
+        return query.substr(1);
     }
 
     //  解析歌词
     function format_lrc(json) {
-        var format_lrc = [];
-        var lrc = json.lrc.split(" ");
+        var piece,text,time,second, format_lrc = [], lrc = json.lrc.split(" ");
         for (var row = 0; row < lrc.length; row++) {
-            var piece = lrc[row].split("]");
-            var text = piece[1];
-            var time = piece[0].substr(1).split(":");
-            var second = Math.floor(Number(time[0] * 60) + Number(time[1]));
+            piece = lrc[row].split("]");
+            text = piece[1];
+            time = piece[0].substr(1).split(":");
+            second = Math.floor(Number(time[0] * 60) + Number(time[1]));
             format_lrc[second] = text;
         }
         //  防止歌词卡在上一首最后一句
@@ -213,7 +211,7 @@
 
                     lyric = format_lrc(json);
 
-                    lrc_interval = setInterval(function () {    //  应用闭包以获取lyric的值
+                    lrc_interval = setInterval(function () {
                         display_lrc(lyric);
                     }, 1000);
 
@@ -240,14 +238,18 @@
         return true;
     }
 
+    function get_search_result(res) {
+        //替换歌曲信息
+        var s=res;
+        console.log(s);
+    }
+
 
     //歌曲表态
     function like() {
-
-        if (open_id == "") {
+        if (!open_id) {
             alert("请先回复“ibox”完成绑定后使用此功能！");
             return false;
-
         }
         $.ajax({
             url: "http://backgroudmusic.sinaapp.com/wxgetmusic.php?t=jsonp&do=like&song_id=" + current_id + "&open_id=" + open_id,
@@ -287,7 +289,6 @@
     function next_song() {
         //判断下一首歌曲ID是否为0，为0表示已经到末尾，跳转到第一首
         if (next_id == 0) {
-
             get_song(-1, open_id);
             return false;
         }
@@ -312,7 +313,7 @@
                         var list_html = "";
                         list_html += '<dl>';
                         if (json.type == "0") {
-                            list_html += '<a href="javascript:void(0)" onclick="get_song_from_list(' + json.music_url + ')">';
+                            list_html += '<a href="javascript:void(0)" onclick="get_search_result(' +json.music_cover+ ');">';
                             list_html += '<dt><img src="' + json.music_cover + '" width=50></dt>';
                             list_html += '<dd><h3>' + json.music_name + '</h3></dd>';
                             list_html += '<dd>' + json.music_singer + '</dd>';
@@ -348,6 +349,7 @@
                     if (json.error == 0) {
                         var list_html = "";
                         var j = 0;
+
                         $.each(json.music_list, function (i, v) {
                             list_html += '<dl>';
                             list_html += '<a href="javascript:void(0)" onclick="get_song_from_list(' + v.mid + ')">';
@@ -360,6 +362,7 @@
                         });
                         $("#fmlistdiv").html(list_html);
                         var page_html = "";
+
                         if (json.page != 1) {
                             page_html += '<a href="javascript:void(0)" class="first_pg" onclick="get_list(1,' + like_flag + ');">First</a>';
                             page_html += '<a href="javascript:void(0)" class="prev_pg" onclick="get_list(' + json.music_prev + ',' + like_flag + ');">Pre</a>';
@@ -378,12 +381,10 @@
             });
         }
         return true;
-
     }
     //列表点击歌曲播放
     function get_song_from_list(song_id) {
         move('#fmlistbox').sub('left', dwidth).end();
-
         get_song(song_id, open_id);
     }
 </script>

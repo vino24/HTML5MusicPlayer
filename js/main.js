@@ -1,20 +1,17 @@
 var Player = function () {
-    var obj, mt, playing = false, that = this;
-    var cover_bg = $('.cover_bg');
-    var playbtn = $('#playbtn');
-    var volbar = $('#fmvol');
-    var prog = $('.progdiv');
-    var volbg = document.getElementById("volbg");   //  用以调用getBoundingClientRect
-
+    var obj, mt, playing = false, that = this,
+        cover_bg = $('.cover_bg'),
+        playbtn = $('#playbtn'),
+        volbar = $('#fmvol'),
+        prog = $('.progdiv'),
+        volbg = document.getElementById("volbg");   //  用以调用getBoundingClientRect
     //  初始化
     this.init = function (id) {
-
         obj = $(id)[0];
         var $obj = $(obj);
         obj.volume = Number(localStorage['vol']) || .5;
         $obj.bind('loadeddata', updateTimer);
         $obj.bind('loadeddata', updateVol);
-
         $obj.bind('progress', function () {
             //  console.log(obj.readyState);
             //  @todo 网络流畅状态下Chrome/Firefox readystate只有0/4两个，IE无效
