@@ -13,7 +13,6 @@ var Player = function () {
         $obj.bind('loadeddata', updateTimer);
         $obj.bind('loadeddata', updateVol);
         $obj.bind('progress', function () {
-            //  console.log(obj.readyState);
             //  @todo 网络流畅状态下Chrome/Firefox readystate只有0/4两个，IE无效
             //  通过readystate判定媒体内容加载情况，保证在可读取buffer信息时才调用onSoundBuffering
             if (obj.readyState !== 0 && obj.readyState !== 1) {
@@ -39,19 +38,17 @@ var Player = function () {
         playbtn.bind('click', this.playpause);
         //  音量条控制
         volbar.bind('click', function () {
-            var display = $('.vol').css('display');
-            if (display == "none")
-                $('.vol').css('display', 'block');
-            else
-                $('.vol').css('display', 'none');
+            var state;
+            if ($('.vol').css('display') == "none") state = "block";
+            else state = "none";
+            $('.vol').css('display', state);
         });
         //  跳转
         prog.bind('mousedown', audioSeek);
         //  音量控制
         $('#volbg').bind('click', function (e) {
             var length = volbg.getBoundingClientRect().bottom - e.clientY;
-            var percent = (volbg.offsetHeight - length) / volbg.offsetHeight;
-            obj.volume = 1 - percent;
+            obj.volume = length / volbg.offsetHeight;
             localStorage['vol'] = obj.volume;
             updateVol();
         });
@@ -97,15 +94,9 @@ var Player = function () {
     };
 
     var audioSeek = function (e) {
-        if (obj.paused || obj.ended) {
-            that.play();
+        if (obj.paused || obj.ended) that.play();
             enhanceAudioSeek(e);
             updateLrc();
-        }
-        else {
-            enhanceAudioSeek(e);
-            updateLrc();
-        }
     };
     //    跳转函数
     var enhanceAudioSeek = function (e) {
@@ -129,7 +120,6 @@ var Player = function () {
 
     //  自动播放下一首
     var onSoundComplete = function () {
-
         //  结束上一首的歌词显示
         clearInterval(lrc_interval);
 
